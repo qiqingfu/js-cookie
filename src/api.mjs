@@ -74,6 +74,8 @@ function init (converter, defaultAttributes) {
 
       /**
        * 没有搞太明白为什么要 split(';')
+       * 搞明白了, 测试用例的需要。在测试用例中涵盖了某些情况，比如:
+       * https://github.com/js-cookie/js-cookie/blob/master/test/tests.js#L382
        */
       stringifiedAttributes += '=' + attributes[attributeName].split(';')[0]
     }
@@ -85,20 +87,44 @@ function init (converter, defaultAttributes) {
   }
 
   function get (key) {
+    /**
+     * Cookie.get('')
+     */
     if (typeof document === 'undefined' || (arguments.length && !key)) {
       return
     }
 
     // To prevent the for loop in the first place assign an empty array
     // in case there are no cookies at all.
+    /**
+     * 当前 document 中所有的 cookie列表
+     */
     var cookies = document.cookie ? document.cookie.split('; ') : []
     var jar = {}
     for (var i = 0; i < cookies.length; i++) {
+      /**
+       * name=value; a=1=2=3; x=001; y=002
+       */
       var parts = cookies[i].split('=')
+      /**
+       * 1. value = value
+       * 2. value = 1=2=3
+       * 3. value = 001
+       * 4. value = 002
+       */
       var value = parts.slice(1).join('=')
+      /**
+       * 将存储的 key 再还原为原始的 key（如果存在需要编码的情况下）
+       */
       var foundKey = defaultConverter.read(parts[0]).replace(/%3D/g, '=')
+      /**
+       * 如果 value 值需要解码
+       */
       jar[foundKey] = converter.read(value, foundKey)
 
+      /**
+       * 提前结束循环
+       */
       if (key === foundKey) {
         break
       }

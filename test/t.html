@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script type="module">
+  import Cookie from '/src/api.mjs'
+
+  Cookie.set('name', 'qqf=age=123', {
+    expires: 6
+  })
+  Cookie.set('web', '123;ww;sz')
+  Cookie.set('login', '1')
+
+  const value = Cookie.get('name')
+  console.log(value)
+</script>
+</body>
+</html>
