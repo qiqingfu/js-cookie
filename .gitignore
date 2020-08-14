@@ -2,3 +2,4 @@ node_modules
 dist
 .sizecache.json
 *.log*
+.idea
